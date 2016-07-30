@@ -10,8 +10,8 @@ import UIKit
 
 @IBDesignable class GraphView: UIView {
     
+    //Weekly sample data
     var graphPoints:[Int] = [4, 2, 6, 4, 5, 8, 3]
-
     
     //1 - the properties for the gradient
     @IBInspectable var startColor: UIColor = UIColor.redColor()
@@ -23,8 +23,9 @@ import UIKit
         let height = rect.height
         
         //set up background clipping area
-        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: UIRectCorner.AllCorners, cornerRadii: CGSize(width : 8.0, height : 8.0))
-        
+        let path = UIBezierPath(roundedRect: rect,
+                                byRoundingCorners: UIRectCorner.AllCorners,
+                                cornerRadii: CGSize(width: 8.0, height: 8.0))
         path.addClip()
         
         //2 - get the current context
@@ -38,13 +39,20 @@ import UIKit
         let colorLocations:[CGFloat] = [0.0, 1.0]
         
         //5 - create the gradient
-        let gradient = CGGradientCreateWithColors(colorSpace, colors, colorLocations)
+        let gradient = CGGradientCreateWithColors(colorSpace,
+                                                  colors,
+                                                  colorLocations)
         
         //6 - draw the gradient
         var startPoint = CGPoint.zero
         var endPoint = CGPoint(x:0, y:self.bounds.height)
-        CGContextDrawLinearGradient(context,  gradient, startPoint, endPoint,   [])
+        CGContextDrawLinearGradient(context,
+                                    gradient,
+                                    startPoint,
+                                    endPoint,
+                                    [])
         
+        //calculate the x point
         
         let margin:CGFloat = 20.0
         let columnXPoint = { (column:Int) -> CGFloat in
@@ -61,14 +69,14 @@ import UIKit
         let topBorder:CGFloat = 60
         let bottomBorder:CGFloat = 50
         let graphHeight = height - topBorder - bottomBorder
-        let maxValue = graphPoints.maxElement()
-        // let maxValue = maxElement(graphPoints)
-        var columnYPoint = { (graphPoint:Int) -> CGFloat in
+        let maxValue = graphPoints.maxElement()!
+        let columnYPoint = { (graphPoint:Int) -> CGFloat in
             var y:CGFloat = CGFloat(graphPoint) /
-                CGFloat(maxValue!) * graphHeight
+                CGFloat(maxValue) * graphHeight
             y = graphHeight + topBorder - y // Flip the graph
             return y
         }
+        
         // draw the line graph
         
         UIColor.whiteColor().setFill()
@@ -87,8 +95,6 @@ import UIKit
                                     y:columnYPoint(graphPoints[i]))
             graphPath.addLineToPoint(nextPoint)
         }
-        
-        // graphPath.stroke()
         
         //Create the clipping path for the graph gradient
         
@@ -110,7 +116,7 @@ import UIKit
         //4 - add the clipping path to the context
         clippingPath.addClip()
         
-        let highestYPoint = columnYPoint(maxValue!)
+        let highestYPoint = columnYPoint(maxValue)
         startPoint = CGPoint(x:margin, y: highestYPoint)
         endPoint = CGPoint(x:margin, y:self.bounds.height)
         
@@ -120,7 +126,6 @@ import UIKit
         //draw the line on top of the clipped gradient
         graphPath.lineWidth = 2.0
         graphPath.stroke()
-        
         
         //Draw the circles on top of graph stroke
         for i in 0..<graphPoints.count {
@@ -133,6 +138,8 @@ import UIKit
                     size: CGSize(width: 5.0, height: 5.0)))
             circle.fill()
         }
+        
+        
         
         //Draw horizontal graph lines on the top of everything
         let linePath = UIBezierPath()
@@ -158,5 +165,7 @@ import UIKit
         
         linePath.lineWidth = 1.0
         linePath.stroke()
+        
+        
     }
 }
